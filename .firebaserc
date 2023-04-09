@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "aws-exchange",
+    "production": "avs-cambios-56f1b"
+  },
+  "targets": {},
+  "etags": {}
+}

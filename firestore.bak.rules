@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /configuracion/adminConfig {
+      allow read: if request.auth != null
+      allow update: if get(/databases/$(database)/documents/uinfo/$(request.auth.uid)).data.rol == "admin";
+    }
+
+    match /noticias/{document=**} {
+      allow read: if true
+      allow write: if get(/databases/$(database)/documents/uinfo/$(request.auth.uid)).data.rol == "admin";
+    }
+
+    match /uinfo/{document=**} {
+        allow read: if true
+    }
+       
+    match /uinfo/{userId} {
+        allow create: if request.resource.data.rol !== "admin"
+        allow update: if request.auth != null && request.auth.uid == userId
+        allow update, delete: if get(/databases/$(database)/documents/uinfo/$(request.auth.uid)).data.rol == "admin";
+    }
+
+    match /transacciones/{document=**} {
+        allow update, read: if get(/databases/$(database)/documents/uinfo/$(request.auth.uid)).data.rol == "admin";
+        allow get, list, create: if true
+    }
+  }
+}
